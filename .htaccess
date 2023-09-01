@@ -1,0 +1,31 @@
+# Disable cache for all files
+<IfModule mod_headers.c>
+    Header unset ETag
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</IfModule>
+
+# Cache images for 1 month
+<FilesMatch "\.(ico|webp|jpg|jpeg|png|gif)$">
+    ExpiresDefault "access plus 1 month"
+    Header set Cache-Control "public, max-age=2592000"
+</FilesMatch>
+
+# Cache sound and videos for 1 month
+<FilesMatch "\.(mp4|mp3)$">
+    ExpiresDefault "access plus 1 month"
+    Header set Cache-Control "public, max-age=2592000"
+</FilesMatch>
+
+# Cache CSS and JavaScript that caters for a version number parameter for 1 week
+# example declaration of a file could be style.css?v3
+<FilesMatch "\.(css|js)$">
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{QUERY_STRING} ^v\d+$
+        RewriteRule ^(.*)$ $1 [L]
+    </IfModule>
+    ExpiresDefault "access plus 1 week"
+    Header set Cache-Control "public, max-age=604800"
+</FilesMatch>
