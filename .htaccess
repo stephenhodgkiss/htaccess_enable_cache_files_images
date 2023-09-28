@@ -18,9 +18,19 @@
     Header set Cache-Control "public, max-age=2592000"
 </FilesMatch>
 
-# Cache CSS and JavaScript that caters for a version number parameter for 1 week
-# example declaration of a file could be style.css?v3
+# Cache CSS and JavaScript with version parameter for 1 week
 <FilesMatch "\.(css|js)$">
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{QUERY_STRING} ^v\d+$
+        RewriteRule ^(.*)$ $1 [L]
+    </IfModule>
+    ExpiresDefault "access plus 1 week"
+    Header set Cache-Control "public, max-age=604800"
+</FilesMatch>
+
+# Cache Fonts with version parameter for 1 week
+<FilesMatch "\.(ttf|otf|woff|woff2)$">
     <IfModule mod_rewrite.c>
         RewriteEngine On
         RewriteCond %{QUERY_STRING} ^v\d+$
